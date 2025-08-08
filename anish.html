@@ -124,10 +124,9 @@
     const giftMsg = document.getElementById('gift-message');
     const music = document.getElementById('bg-music');
 
-    // Set target time: Tomorrow at 10:00 AM IST
-    let target = new Date();
-    target.setDate(target.getDate() + 1);
-    target.setHours(10, 0, 0, 0);
+  // Set target time: 5 seconds from now for testing
+let target = new Date(new Date().getTime() + 5000);
+
 
     function updateCountdown() {
       let now = new Date().getTime();
@@ -165,3 +164,4 @@
   </script>
 </body>
 </html>
+
