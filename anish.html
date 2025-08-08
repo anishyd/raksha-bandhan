@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Raksha Bandhan for Sadhana</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ff9a9e, #fad0c4);
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden; /* allow vertical scroll */
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      animation: fadeUp 2s ease-in-out;
+    }
+    p {
+      font-size: 1.3rem;
+      animation: fadeUp 3s ease-in-out;
+      max-width: 700px;
+    }
+    #countdown {
+      font-size: 2rem;
+      margin: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+    #celebration {
+      display: none;
+      animation: fadeIn 2s ease forwards;
+      margin-top: 40px;
+    }
+    #gift-btn {
+      background-color: #ff6f91;
+      border: none;
+      color: white;
+      padding: 15px 25px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 10px;
+      margin-top: 20px;
+      animation: fadeUp 3.5s ease-in-out;
+    }
+    #gift-message {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      color: #ffe6e6;
+      animation: fadeUp 4s ease-in-out;
+    }
+    #info {
+      margin-top: 40px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      max-width: 600px;
+      backdrop-filter: blur(10px);
+      color: #fff;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <canvas id="sparkle"></canvas>
+  <div class="container">
+    <h1>🌸 Happy Raksha Bandhan 🌸</h1>
+    <p>Some bonds shine beyond traditions — like this little message floating across space & screen just for you. ✨</p>
+
+    <!-- Lofi background music -->
+    <audio id="bg-music" autoplay loop>
+      <source src="audio/lofi.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="countdown"></div>
+
+    <div id="celebration">
+      <button id="gift-btn">🎁 Claim Your Surprise</button>
+      <div id="gift-message" class="hidden">
+        Sadhana, your presence is a whole vibe 🌷<br>
+        This page is just a spark from how much you’re valued 💫<br><br>
+        <img src="images/image.png" alt="For You" style="max-width: 80%; border-radius: 15px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+      </div>
+      <div id="info">
+        <h2>What is Raksha Bandhan?</h2>
+        <p>It’s a festival of love & protection. But today, this space is just a quiet way to remind you that someone out there remembers, appreciates, and celebrates you — digitally and truly 🕊️</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const countdown = document.getElementById('countdown');
+    const celebration = document.getElementById('celebration');
+    const giftBtn = document.getElementById('gift-btn');
+    const giftMsg = document.getElementById('gift-message');
+    const music = document.getElementById('bg-music');
+
+    // Set target time: Tomorrow at 10:00 AM IST
+    let target = new Date();
+    target.setDate(target.getDate() + 1);
+    target.setHours(10, 0, 0, 0);
+
+    function updateCountdown() {
+      let now = new Date().getTime();
+      let distance = target - now;
+
+      if (distance <= 0) {
+        countdown.style.display = 'none';
+        celebration.style.display = 'block';
+        return;
+      }
+
+      let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      let mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      let secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+      countdown.innerHTML = `${days}d ${hours}h ${mins}m ${secs}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    giftBtn.addEventListener('click', () => {
+      giftMsg.classList.remove('hidden');
+      giftBtn.disabled = true;
+      giftBtn.innerText = "Gift Unlocked 🎉";
+    });
+
+    // Handle autoplay restrictions
+    document.body.addEventListener('click', () => {
+      if (music.paused) {
+        music.play().catch(err => console.log('Autoplay blocked:', err));
+      }
+    });
+  </script>
+</body>
+</html>
