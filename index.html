@@ -1,17 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Raksha Bandhan for Sadhana</title>
+  <title>Raksha Bandhan</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #ff9a9e, #fad0c4);
       color: #fff;
+      overflow: hidden;
       text-align: center;
-      overflow-x: hidden; /* allow vertical scroll */
     }
     canvas {
       position: fixed;
@@ -38,7 +39,6 @@
     p {
       font-size: 1.3rem;
       animation: fadeUp 3s ease-in-out;
-      max-width: 700px;
     }
     #countdown {
       font-size: 2rem;
@@ -51,7 +51,6 @@
     #celebration {
       display: none;
       animation: fadeIn 2s ease forwards;
-      margin-top: 40px;
     }
     #gift-btn {
       background-color: #ff6f91;
@@ -95,14 +94,8 @@
   <div class="container">
     <h1>🌸 Happy Raksha Bandhan 🌸</h1>
     <p>Some bonds shine beyond traditions — like this little message floating across space & screen just for you. ✨</p>
-
-    <!-- Lofi background music -->
-    <audio id="bg-music" autoplay loop>
-      <source src="audio/lofi.mp3" type="audio/mpeg">
-    </audio>
-
+    <audio id="bg-music" src="audio/music.mp3" type="audio/mpeg" autoplay loop></audio>
     <div id="countdown"></div>
-
     <div id="celebration">
       <button id="gift-btn">🎁 Claim Your Surprise</button>
       <div id="gift-message" class="hidden">
@@ -116,22 +109,17 @@
       </div>
     </div>
   </div>
-
   <script>
     const countdown = document.getElementById('countdown');
     const celebration = document.getElementById('celebration');
     const giftBtn = document.getElementById('gift-btn');
     const giftMsg = document.getElementById('gift-message');
-    const music = document.getElementById('bg-music');
-
-  // Set target time: Tomorrow at 10:00 AM IST
-    let target = new Date();
-    target.setDate(target.getDate() + 1);
-    target.setHours(10, 0, 0, 0);
+    const now = new Date();
+    const rakshaBandhanDate = new Date(now.getTime() + 5000); // for testing: 5 seconds from now
 
     function updateCountdown() {
-      let now = new Date().getTime();
-      let distance = target - now;
+      const current = new Date().getTime();
+      const distance = rakshaBandhanDate.getTime() - current;
 
       if (distance <= 0) {
         countdown.style.display = 'none';
@@ -139,34 +127,31 @@
         return;
       }
 
-      let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      let mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      let secs = Math.floor((distance % (1000 * 60)) / 1000);
-
-
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((distance % (1000 * 60)) / 1000);
 
       countdown.innerHTML = `${days}d ${hours}h ${mins}m ${secs}s`;
     }
 
     updateCountdown();
-    setInterval(updateCountdown, 1000);
+    const intervalId = setInterval(updateCountdown, 1000);
 
     giftBtn.addEventListener('click', () => {
       giftMsg.classList.remove('hidden');
       giftBtn.disabled = true;
       giftBtn.innerText = "Gift Unlocked 🎉";
     });
-
-    // Handle autoplay restrictions
-    document.body.addEventListener('click', () => {
-      if (music.paused) {
-        music.play().catch(err => console.log('Autoplay blocked:', err));
-      }
-    });
   </script>
+<audio autoplay loop>
+  <source src="audio/music.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+<audio autoplay loop controls>
+  <source src="audio/rakhi_song.mp3" type="audio/mpeg">
+</audio>
+
+</audio>
+
 </body>
 </html>
-
-
-
