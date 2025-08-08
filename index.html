@@ -124,12 +124,10 @@
     const giftMsg = document.getElementById('gift-message');
     const music = document.getElementById('bg-music');
 
- // Set target time: Tomorrow at 10:00 AM IST
-let target = new Date();
-target.setDate(target.getDate() + 1);
-target.setHours(10, 0, 0, 0);
-
-
+  // Set target time: Tomorrow at 10:00 AM IST
+    let target = new Date();
+    target.setDate(target.getDate() + 1);
+    target.setHours(10, 0, 0, 0);
 
     function updateCountdown() {
       let now = new Date().getTime();
@@ -145,6 +143,8 @@ target.setHours(10, 0, 0, 0);
       let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       let mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       let secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+
 
       countdown.innerHTML = `${days}d ${hours}h ${mins}m ${secs}s`;
     }
@@ -167,5 +167,6 @@ target.setHours(10, 0, 0, 0);
   </script>
 </body>
 </html>
+
 
 
