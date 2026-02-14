@@ -1,157 +1,164 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Raksha Bandhan</title>
-  <style>
+<meta charset="UTF-8">
+<title>Circle Escape Game</title>
+<style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #ff9a9e, #fad0c4);
-      color: #fff;
-      overflow: hidden;
-      text-align: center;
+        margin: 0;
+        background: black;
+        overflow: hidden;
     }
     canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 0;
+        display: block;
+        margin: auto;
+        background: #111;
     }
-    .container {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      animation: fadeUp 2s ease-in-out;
-    }
-    p {
-      font-size: 1.3rem;
-      animation: fadeUp 3s ease-in-out;
-    }
-    #countdown {
-      font-size: 2rem;
-      margin: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 10px 20px;
-      border-radius: 10px;
-      backdrop-filter: blur(10px);
-    }
-    #celebration {
-      display: none;
-      animation: fadeIn 2s ease forwards;
-    }
-    #gift-btn {
-      background-color: #ff6f91;
-      border: none;
-      color: white;
-      padding: 15px 25px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border-radius: 10px;
-      margin-top: 20px;
-      animation: fadeUp 3.5s ease-in-out;
-    }
-    #gift-message {
-      margin-top: 20px;
-      font-size: 1.5rem;
-      color: #ffe6e6;
-      animation: fadeUp 4s ease-in-out;
-    }
-    #info {
-      margin-top: 40px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      max-width: 600px;
-      backdrop-filter: blur(10px);
-      color: #fff;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .hidden { display: none; }
-  </style>
+</style>
 </head>
 <body>
-  <canvas id="sparkle"></canvas>
-  <div class="container">
-    <h1>🌸 Happy Raksha Bandhan 🌸</h1>
-    <p>Some bonds shine beyond traditions — like this little message floating across space & screen just for you. ✨</p>
-    <audio id="bg-music" src="audio/music.mp3" type="audio/mpeg" autoplay loop></audio>
-    <div id="countdown"></div>
-    <div id="celebration">
-      <button id="gift-btn">🎁 Claim Your Surprise</button>
-      <div id="gift-message" class="hidden">
-        Sadhana, your presence is a whole vibe 🌷<br>
-        This page is just a spark from how much you’re valued 💫<br><br>
-        <img src="images/image.png" alt="For You" style="max-width: 80%; border-radius: 15px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-      </div>
-      <div id="info">
-        <h2>What is Raksha Bandhan?</h2>
-        <p>It’s a festival of love & protection. But today, this space is just a quiet way to remind you that someone out there remembers, appreciates, and celebrates you — digitally and truly 🕊️</p>
-      </div>
-    </div>
-  </div>
-  <script>
-    const countdown = document.getElementById('countdown');
-    const celebration = document.getElementById('celebration');
-    const giftBtn = document.getElementById('gift-btn');
-    const giftMsg = document.getElementById('gift-message');
-    const now = new Date();
-    const rakshaBandhanDate = new Date(now.getTime() + 5000); // for testing: 5 seconds from now
+<canvas id="game"></canvas>
 
-    function updateCountdown() {
-      const current = new Date().getTime();
-      const distance = rakshaBandhanDate.getTime() - current;
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-      if (distance <= 0) {
-        countdown.style.display = 'none';
-        celebration.style.display = 'block';
-        return;
-      }
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((distance % (1000 * 60)) / 1000);
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+const circleRadius = 220;
+const gapSize = Math.PI / 5;
 
-      countdown.innerHTML = `${days}d ${hours}h ${mins}m ${secs}s`;
+let rotation = 0;
+let balls = [];
+
+let keys = {
+    left: false,
+    right: false
+};
+
+class Ball {
+    constructor(x, y, dx, dy) {
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.radius = 8;
+        this.escaped = false;
     }
 
-    updateCountdown();
-    const intervalId = setInterval(updateCountdown, 1000);
+    update() {
+        this.x += this.dx;
+        this.y += this.dy;
 
-    giftBtn.addEventListener('click', () => {
-      giftMsg.classList.remove('hidden');
-      giftBtn.disabled = true;
-      giftBtn.innerText = "Gift Unlocked 🎉";
-    });
-  </script>
-<audio autoplay loop>
-  <source src="audio/music.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-<audio autoplay loop controls>
-  <source src="audio/rakhi_song.mp3" type="audio/mpeg">
-</audio>
+        const dist = Math.hypot(this.x - centerX, this.y - centerY);
 
-</audio>
+        if (!this.escaped && dist + this.radius >= circleRadius) {
+            let angle = Math.atan2(this.y - centerY, this.x - centerX);
+            if (angle < 0) angle += Math.PI * 2;
 
+            let gapStart = rotation;
+            let gapEnd = rotation + gapSize;
+
+            if (gapEnd > Math.PI * 2) {
+                if (angle > gapStart || angle < gapEnd - Math.PI * 2) {
+                    this.escape();
+                } else {
+                    this.bounce(dist);
+                }
+            } else {
+                if (angle > gapStart && angle < gapEnd) {
+                    this.escape();
+                } else {
+                    this.bounce(dist);
+                }
+            }
+        }
+    }
+
+    bounce(dist) {
+        let normalX = (this.x - centerX) / dist;
+        let normalY = (this.y - centerY) / dist;
+        let dot = this.dx * normalX + this.dy * normalY;
+        this.dx -= 2 * dot * normalX;
+        this.dy -= 2 * dot * normalY;
+    }
+
+    escape() {
+        this.escaped = true;
+
+        // Replace 1 ball with 2 new balls
+        balls.push(new Ball(centerX, centerY,
+            (Math.random() - 0.5) * 8,
+            (Math.random() - 0.5) * 8));
+
+        balls.push(new Ball(centerX, centerY,
+            (Math.random() - 0.5) * 8,
+            (Math.random() - 0.5) * 8));
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+    }
+}
+
+balls.push(new Ball(centerX, centerY, 4, 3));
+
+function drawCircle() {
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(rotation);
+
+    ctx.beginPath();
+    ctx.arc(0, 0, circleRadius, gapSize, Math.PI * 2);
+    ctx.strokeStyle = "cyan";
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function update() {
+    if (keys.left) rotation -= 0.05;
+    if (keys.right) rotation += 0.05;
+
+    balls.forEach(ball => ball.update());
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawCircle();
+
+    balls.forEach(ball => ball.draw());
+
+    ctx.fillStyle = "white";
+    ctx.font = "18px Arial";
+    ctx.fillText("Balls: " + balls.length, 20, 30);
+    ctx.fillText("Move Gap: LEFT / RIGHT arrows", 20, 55);
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+document.addEventListener("keydown", e => {
+    if (e.code === "ArrowLeft") keys.left = true;
+    if (e.code === "ArrowRight") keys.right = true;
+});
+
+document.addEventListener("keyup", e => {
+    if (e.code === "ArrowLeft") keys.left = false;
+    if (e.code === "ArrowRight") keys.right = false;
+});
+
+gameLoop();
+</script>
 </body>
 </html>
